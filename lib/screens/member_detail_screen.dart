@@ -3,6 +3,7 @@ import 'package:flash_chat/model/teammembers.dart';
 import 'package:flash_chat/notifier/skill_notifier.dart';
 import 'package:flash_chat/notifier/teammember_notifier.dart';
 import 'package:flash_chat/screens/skill_detail_screen.dart';
+import 'package:flash_chat/skill_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +18,9 @@ class _TeamMemberDetailState extends State<TeamMemberDetail> {
   TeamMember _currentTeamMember;
   @override
   void initState() {
+//    TeamMemberNotifier teamMemberNotifier =
+//        Provider.of<TeamMemberNotifier>(context, listen: false);
+//    getTeamMembers(teamMemberNotifier);
 //    TeamMemberNotifier teamMemberNotifier =
 //        Provider.of<TeamMemberNotifier>(context);
 //    if (teamMemberNotifier.currentteammember != null) {
@@ -64,6 +68,24 @@ class _TeamMemberDetailState extends State<TeamMemberDetail> {
         Provider.of<TeamMemberNotifier>(context);
     print('teammember notifier value in build - ' +
         teamMemberNotifier.currentteammember.firstname.toString());
+
+    void _showSkillForm() {
+      showModalBottomSheet(
+          context: context,
+          builder: (context) {
+            return Container(
+              //TODO: Make border radius work - by working with canvas colour
+//              decoration: BoxDecoration(
+//                  borderRadius: BorderRadius.only(
+//                topLeft: Radius.circular(20),
+//                topRight: Radius.circular(20),
+//              )),
+              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
+              child: SkillForm(),
+            );
+          });
+    }
+
 //    print(teamMemberNotifier.currentteammember.curskillvalues.toString());
 //
     _currentTeamMember = teamMemberNotifier.currentteammember;
@@ -129,6 +151,8 @@ class _TeamMemberDetailState extends State<TeamMemberDetail> {
                 ),
                 SizedBox(height: 5),
                 GridView.builder(
+                  physics: ScrollPhysics(),
+                  scrollDirection: Axis.vertical,
                   shrinkWrap: true,
                   padding: EdgeInsets.all(10),
                   itemCount:
@@ -139,6 +163,7 @@ class _TeamMemberDetailState extends State<TeamMemberDetail> {
                       mainAxisSpacing: 4),
                   itemBuilder: (BuildContext context, int index) {
                     return Card(
+                      elevation: 5,
                       color: (teamMemberNotifier
                                   .currentteammember.curskillvalues[index] <
                               teamMemberNotifier
@@ -147,6 +172,7 @@ class _TeamMemberDetailState extends State<TeamMemberDetail> {
                           : Colors.greenAccent,
                       child: Column(
                         children: <Widget>[
+                          SizedBox(height: 5),
                           Text(
                             teamMemberNotifier
                                 .currentteammember.skillslist[index]
@@ -331,23 +357,24 @@ class _TeamMemberDetailState extends State<TeamMemberDetail> {
 //          ),
 //        ),
 //      ),
-//      floatingActionButton: Column(
-//        mainAxisAlignment: MainAxisAlignment.end,
-//        children: <Widget>[
-//          FloatingActionButton(
-//            heroTag: 'button1',
-//            onPressed: () {
-////              Navigator.of(context).push(
-////                MaterialPageRoute(builder: (BuildContext context) {
-////                  return SkillForm(
-////                    isUpdating: true,
-////                  );
-////                }),
-////              );
-//            },
-//            child: Icon(Icons.add),
-//            foregroundColor: Colors.white,
-//          ),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          FloatingActionButton(
+            heroTag: 'button1',
+            onPressed: () {
+              _showSkillForm();
+//              Navigator.of(context).push(
+//                MaterialPageRoute(builder: (BuildContext context) {
+//                  return SkillForm(
+//                    isUpdating: true,
+//                  );
+//                }),
+//              );
+            },
+            child: Icon(Icons.add),
+            foregroundColor: Colors.white,
+          ),
 //          SizedBox(height: 20),
 ////          FloatingActionButton(
 ////            heroTag: 'button2',
@@ -356,8 +383,8 @@ class _TeamMemberDetailState extends State<TeamMemberDetail> {
 ////            backgroundColor: Colors.red,
 ////            foregroundColor: Colors.white,
 ////          ),
-//        ],
-//      ),
+        ],
+      ),
     );
   }
 }
