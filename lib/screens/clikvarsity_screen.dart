@@ -23,8 +23,8 @@ class _ClikvarsityScreenState extends State<ClikvarsityScreen> {
                 Navigator.pop(context);
               }),
         ],
-        title: Text('⚡️Clikvarsity'),
-        backgroundColor: Colors.lightBlueAccent,
+        title: Text('Resources'),
+//        backgroundColor: Colors.lightBlueAccent,
       ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -38,7 +38,11 @@ class _ClikvarsityScreenState extends State<ClikvarsityScreen> {
               child: Card(
                 child: Padding(
                   padding: const EdgeInsets.all(15.0),
-                  child: Text('Clikvarsity Website'),
+                  child: Text('Clikvarsity Website',
+                      style: TextStyle(
+                          color: Color(0xFF2A2969),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold)),
                 ),
                 elevation: 5,
               ),
@@ -50,7 +54,13 @@ class _ClikvarsityScreenState extends State<ClikvarsityScreen> {
               child: Card(
                 child: Padding(
                   padding: const EdgeInsets.all(15.0),
-                  child: Text('IBM Your Learning'),
+                  child: Text(
+                    'IBM Your Learning',
+                    style: TextStyle(
+                        color: Color(0xFF2A2969),
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
+                  ),
                 ),
                 elevation: 5,
               ),
@@ -61,7 +71,13 @@ class _ClikvarsityScreenState extends State<ClikvarsityScreen> {
               child: Card(
                 child: Padding(
                   padding: const EdgeInsets.all(15.0),
-                  child: Text('HOLTicket Website'),
+                  child: Text(
+                    'HOLTicket Website',
+                    style: TextStyle(
+                        color: Color(0xFF2A2969),
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
+                  ),
                 ),
                 elevation: 5,
               ),
@@ -72,7 +88,13 @@ class _ClikvarsityScreenState extends State<ClikvarsityScreen> {
               child: Card(
                 child: Padding(
                   padding: const EdgeInsets.all(15.0),
-                  child: Text('Udemy Website'),
+                  child: Text(
+                    'Udemy Website',
+                    style: TextStyle(
+                        color: Color(0xFF2A2969),
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
+                  ),
                 ),
                 elevation: 5,
               ),

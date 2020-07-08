@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/api/teammembers_api.dart';
 import 'package:flash_chat/model/teammembers.dart';
 import 'package:flash_chat/notifier/teammember_notifier.dart';
@@ -11,6 +12,7 @@ class TeamMembersFeed extends StatefulWidget {
 }
 
 class _TeamMembersFeedState extends State<TeamMembersFeed> {
+  final _auth = FirebaseAuth.instance;
   @override
   void initState() {
     TeamMemberNotifier teamMemberNotifier =
@@ -42,15 +44,21 @@ class _TeamMembersFeedState extends State<TeamMembersFeed> {
                 showSearch(
                     context: context, delegate: DataSearch(teamMemberNotifier));
               }),
+          IconButton(
+              icon: Icon(Icons.close),
+              onPressed: () {
+                _auth.signOut();
+                Navigator.pop(context);
+              }),
           // action button
-          FlatButton(
-//            onPressed: () => signout(authNotifier),
-            onPressed: () {},
-            child: Text(
-              "Logout",
-              style: TextStyle(fontSize: 18, color: Colors.white),
-            ),
-          ),
+//          FlatButton(
+////            onPressed: () => signout(authNotifier),
+//            onPressed: () {},
+//            child: Text(
+//              "Logout",
+//              style: TextStyle(fontSize: 18, color: Colors.white),
+//            ),
+//          ),
         ],
       ),
       body: new RefreshIndicator(
@@ -65,19 +73,32 @@ class _TeamMembersFeedState extends State<TeamMembersFeed> {
 //                fit: BoxFit.fitWidth,
 //              ),
               title: teamMemberNotifier.teammemberlist[index].lastname != null
-                  ? Text(teamMemberNotifier.teammemberlist[index].firstname
-                          .toString() +
-                      ' ' +
-                      teamMemberNotifier.teammemberlist[index].lastname)
-                  : Text(teamMemberNotifier.teammemberlist[index].firstname
-                      .toString()),
+                  ? Text(
+                      teamMemberNotifier.teammemberlist[index].firstname
+                              .toString() +
+                          ' ' +
+                          teamMemberNotifier.teammemberlist[index].lastname,
+                      style: TextStyle(
+                          color: Color(0xFF2A2969),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    )
+                  : Text(
+                      teamMemberNotifier.teammemberlist[index].firstname
+                          .toString(),
+                      style: TextStyle(
+                          color: Color(0xFF2A2969),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    ),
               trailing:
                   (teamMemberNotifier.teammemberlist[index].readiness == 'yes')
                       ? Icon(Icons.check_circle_outline,
-                          size: 30, color: Colors.greenAccent)
-                      : Icon(Icons.block, size: 30, color: Colors.redAccent),
-              subtitle: Text(teamMemberNotifier
-                  .teammemberlist[index].futrole ??= 'Unspecified'),
+                          size: 40, color: Colors.greenAccent)
+                      : Icon(Icons.block, size: 40, color: Colors.redAccent),
+              subtitle: Text(teamMemberNotifier.teammemberlist[index].futrole +
+                  ' in ' +
+                  teamMemberNotifier.teammemberlist[index].tower),
               onTap: () {
                 teamMemberNotifier.currentteammember =
                     teamMemberNotifier.teammemberlist[index];
@@ -93,7 +114,8 @@ class _TeamMembersFeedState extends State<TeamMembersFeed> {
           itemCount: teamMemberNotifier.teammemberlist.length,
           separatorBuilder: (BuildContext context, int index) {
             return Divider(
-              color: Colors.black,
+              color: Color(0xFFFBAB19),
+              thickness: 1,
             );
           },
         ),
@@ -165,13 +187,17 @@ class DataSearch extends SearchDelegate<String> {
         ? teamMemberNotifier.teammemberlist
         : teamMemberNotifier.teammemberlist
             .where((p) =>
-                p.firstname.toLowerCase().startsWith(query.toLowerCase()))
+                p.firstname.toLowerCase().startsWith(query.toLowerCase()) ||
+                p.tower.toLowerCase().startsWith(query.toLowerCase()))
             .toList();
 //    // TODO: implement buildSuggestions
     return RefreshIndicator(
       child: ListView.separated(
+//      child: ListView.builder(
         itemBuilder: (BuildContext context, int index) {
-          return ListTile(
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: ListTile(
 //              leading: Image.network(
 //                teamMemberNotifier.teammemberlist[index].readiness
 //                    ? Icon
@@ -179,30 +205,45 @@ class DataSearch extends SearchDelegate<String> {
 //                width: 120,
 //                fit: BoxFit.fitWidth,
 //              ),
-            title: suggestionList[index].lastname != null
-                ? Text(suggestionList[index].firstname +
-                    '${suggestionList[index].lastname}')
-                : Text(suggestionList[index].firstname),
-            trailing: (suggestionList[index].readiness == 'yes')
-                ? Icon(Icons.check_circle_outline,
-                    size: 30, color: Colors.greenAccent)
-                : Icon(Icons.block, size: 30, color: Colors.redAccent),
-            subtitle: Text(suggestionList[index].futrole ??= 'Unspecified'),
-            onTap: () {
-              teamMemberNotifier.currentteammember = suggestionList[index];
-              print(teamMemberNotifier.currentteammember.firstname);
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (BuildContext context) {
-                  return TeamMemberDetail();
-                }),
-              );
-            },
+              title: suggestionList[index].lastname != null
+                  ? Text(
+                      suggestionList[index].firstname +
+                          ' ' +
+                          '${suggestionList[index].lastname}',
+                      style: TextStyle(
+                          color: Color(0xFF2A2969),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    )
+                  : Text(
+                      suggestionList[index].firstname,
+                      style: TextStyle(
+                          color: Color(0xFF2A2969),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    ),
+              trailing: (suggestionList[index].readiness == 'yes')
+                  ? Icon(Icons.check_circle_outline,
+                      size: 40, color: Colors.greenAccent)
+                  : Icon(Icons.block, size: 40, color: Colors.redAccent),
+              subtitle: Text(suggestionList[index].futrole ??= 'Unspecified'),
+              onTap: () {
+                teamMemberNotifier.currentteammember = suggestionList[index];
+                print(teamMemberNotifier.currentteammember.firstname);
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (BuildContext context) {
+                    return TeamMemberDetail();
+                  }),
+                );
+              },
+            ),
           );
         },
         itemCount: suggestionList.length,
         separatorBuilder: (BuildContext context, int index) {
           return Divider(
-            color: Colors.black,
+            color: Color(0xFFFBAB19),
+            thickness: 1,
           );
         },
       ),

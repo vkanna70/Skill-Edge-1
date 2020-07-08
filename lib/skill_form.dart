@@ -1,8 +1,14 @@
+//import 'dart:html';
+
 import 'package:flash_chat/api/teammembers_api.dart';
+import 'package:flash_chat/model/skills.dart';
 import 'package:flash_chat/model/teammembers.dart';
 import 'package:flash_chat/notifier/teammember_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'api/skills_api.dart';
+import 'notifier/skill_notifier.dart';
 
 class SkillForm extends StatefulWidget {
   @override
@@ -10,9 +16,19 @@ class SkillForm extends StatefulWidget {
 }
 
 class _SkillFormState extends State<SkillForm> {
+  List<Skill> _skillslist = [];
   final _formKey = GlobalKey<FormState>();
   final List<String> sugars = ['0', '1', '2', '3', '4'];
   final List<int> strengths = [100, 200, 300, 400, 500, 600, 700, 800, 900];
+  final List<String> staticSkillList = [
+    'Java',
+    'Jenkins',
+    'SpringBoot',
+    'ReactNative',
+    'Docker',
+    'Git',
+    'Kubernetes'
+  ];
 
   // form values
   String _currentName;
@@ -29,12 +45,32 @@ class _SkillFormState extends State<SkillForm> {
   }
 
   @override
+  void initState() {
+    SkillsNotifier skillsNotifier =
+        Provider.of<SkillsNotifier>(context, listen: false);
+    getSkills(skillsNotifier);
+    _skillslist = skillsNotifier.skilllist.toList();
+    print(_skillslist[0].name.toString());
+    // TODO: implement initState
+    super.initState();
+  }
+
+  bool _listB_lessoreq_listA(List one, List two) {
+    var i = -1;
+    return one.every((element) {
+      i++;
+      return two[i] <= element;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     TeamMemberNotifier teamMemberNotifier =
         Provider.of<TeamMemberNotifier>(context);
     print('teammember notifier value during the build of skill form - ' +
         teamMemberNotifier.currentteammember.firstname.toString());
     TeamMember _currentTeamMember = teamMemberNotifier.currentteammember;
+    SkillsNotifier skillsNotifier = Provider.of<SkillsNotifier>(context);
 
     var _currentSkillsList =
         new List<String>.from(_currentTeamMember.skillslist);
@@ -64,33 +100,44 @@ class _SkillFormState extends State<SkillForm> {
         children: <Widget>[
           Text(
             'Add a skill for ${_currentTeamMember.firstname}',
-            style: TextStyle(fontSize: 16.0),
+            style: TextStyle(
+                fontSize: 16.0,
+                color: Color(0xFF2A2969),
+                fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 20.0),
-          TextFormField(
-//            initialValue: _currentTeamMember.firstname,
-//                  decoration: textInputDecoration,
-            validator: (val) =>
-                val.isEmpty ? 'Please enter a skill name' : null,
+
+//          TextFormField(
+//////            initialValue: _currentTeamMember.firstname,
+//////                  decoration: textInputDecoration,
+////            validator: (val) =>
+////                val.isEmpty ? 'Please enter a skill name' : null,
+////            decoration: InputDecoration(
+////              hintText: 'Enter the skill name',
+////            ),
+////            textAlign: TextAlign.center,
+////            autofocus: true,
+////            onChanged: (val) => setState(() => _currentSkill = val),
+////          ),
+          //          TODO: Convert the dropdown from hardcoded list to one that fetches from the skills collection
+//          TODO: Remove the fixed width sizedbox used for centering text in dropdown
+          DropdownButtonFormField(
             decoration: InputDecoration(
-              hintText: 'Enter the skill name',
+              hintText: 'select skill',
             ),
-            textAlign: TextAlign.center,
-            autofocus: true,
+            value: _currentSkill,
+//            items: staticSkillList.map((skill) {
+            items: _skillslist.map((skill) {
+              return DropdownMenuItem(
+                value: skill.name,
+                child: Text(
+                  '${skill.name}',
+                ),
+              );
+            }).toList(),
             onChanged: (val) => setState(() => _currentSkill = val),
           ),
-          //TODO: Convert the plain text field into a dropdown with values from the skills collection
-          //                DropdownButtonFormField(
-//                  value: _currentSugars ?? userData.sugars,
-//                  decoration: textInputDecoration,
-//                  items: sugars.map((sugar) {
-//                    return DropdownMenuItem(
-//                      value: sugar,
-//                      child: Text('$sugar sugars'),
-//                    );
-//                  }).toList(),
-//                  onChanged: (val) => setState(() => _currentSugars = val ),
-//                ),
+
           SizedBox(height: 20.0),
           Text('Select Required Level (1-5)'),
           SizedBox(height: 5.0),
@@ -117,7 +164,7 @@ class _SkillFormState extends State<SkillForm> {
             onChanged: (val) => setState(() => _currentCurSKill = val.round()),
           ),
           RaisedButton(
-              color: Colors.pink[400],
+              color: Color(0xFF2A2969),
               child: Text(
                 'Update',
                 style: TextStyle(color: Colors.white),
@@ -134,6 +181,13 @@ class _SkillFormState extends State<SkillForm> {
                     print(_currentSkillsList.toString());
                     print(_currentReqSkillValues.toString());
                     print(_currentCurSkillValues.toString());
+
+                    bool readiness = _listB_lessoreq_listA(
+                        _currentCurSkillValues, _currentReqSkillValues);
+                    String readinessUpdate = readiness ? "yes" : "no";
+                    _currentTeamMember.readiness = readinessUpdate;
+                    updateTeamMember(_currentTeamMember);
+
                     updateTeamMember(_currentTeamMember);
                     _onTeamMemberUpdated(_currentTeamMember);
                     Navigator.pop(context);

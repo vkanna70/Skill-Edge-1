@@ -9,6 +9,14 @@ class ReadinessChartScreen extends StatefulWidget {
 }
 
 class _ReadinessChartScreenState extends State<ReadinessChartScreen> {
+//  @override
+//  void initState() {
+//    setState(() {
+//      toggle = !toggle;
+//    });
+//    super.initState();
+//  }
+
   bool toggle = false;
   Map<String, double> dataMap = Map();
   List<Color> colorList = [
@@ -48,12 +56,16 @@ class _ReadinessChartScreenState extends State<ReadinessChartScreen> {
   @override
   Widget build(BuildContext context) {
     countReadies().then((val) {
-      readycount = val;
+      setState(() {
+        readycount = val;
+      });
     });
     print('Newly determined readycount is ' + readycount.toString());
 
     countNotReadies().then((val) {
-      notreadycount = val;
+      setState(() {
+        notreadycount = val;
+      });
     });
     print('Newly determined notreadycount is ' + notreadycount.toString());
 
@@ -75,9 +87,11 @@ class _ReadinessChartScreenState extends State<ReadinessChartScreen> {
                         ),
                       );
                     }
-                    countReadies().then((val) {
-                      readycount = val;
-                    });
+//                    countReadies().then((val) {
+//                      setState(() {
+//                        readycount = val;
+//                      });
+//                    });
 //                    print('Newly determined readycount is ' +
 //                        readycount.toString());
 //
@@ -112,7 +126,18 @@ class _ReadinessChartScreenState extends State<ReadinessChartScreen> {
                     );
                   },
                 )
-              : Text('Press FAB to show chart'),
+//              : Text('Press FAB to show chart'),
+              : Column(
+                  children: <Widget>[
+                    SizedBox(height: 40),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                          'Coming soon - Dashboard here. For readiness summary, press yellow button at the bottom'),
+                    ),
+                    Image.asset('images/dummychart.PNG'),
+                  ],
+                ),
         ),
       ),
       floatingActionButton: FloatingActionButton(

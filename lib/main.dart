@@ -25,6 +25,15 @@ class SkillEdge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        // Define the default brightness and colors.
+//        brightness: Brightness.dark,
+        primaryColor: Color(0xFF2A2969),
+        accentColor: Color(0xFFFBAB19),
+
+        // Define the default font family.
+//        fontFamily: 'Georgia',
+      ),
       debugShowCheckedModeBanner: false,
       home: Consumer<TeamMemberNotifier>(builder: (context, notifier, child) {
         return WelcomeScreen();
@@ -32,35 +41,3 @@ class SkillEdge extends StatelessWidget {
     );
   }
 }
-
-//backup - nested consumers - didn't work. so wrapped invocation of SkilldetailScreen on tap from TeamMemberDetail screen
-//class SkillEdge extends StatelessWidget {
-////  @override
-////  Widget build(BuildContext context) {
-////    return MaterialApp(
-////      debugShowCheckedModeBanner: false,
-////      home: Consumer<TeamMemberNotifier>(
-////        builder: (context, notifier, child) {
-////          Consumer<SkillsNotifier>(
-////            builder: (context, notifier, child) {
-////              return WelcomeScreen();
-////            },
-////          );
-////        },
-////      ),
-////    );
-////  }
-////}
-
-//Old version (before refactoring for model based implementation)
-//void main() => runApp(SkillEdge());
-//
-//class SkillEdge extends StatelessWidget {
-//  @override
-//  Widget build(BuildContext context) {
-//    return MaterialApp(
-//      debugShowCheckedModeBanner: false,
-//      home: WelcomeScreen(),
-//    );
-//  }
-//}

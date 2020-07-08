@@ -67,7 +67,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               ),
               RoundedButton(
                 title: 'Register',
-                colour: Colors.blueAccent,
+                colour: Color(0xFFFBAB19),
                 onPressed: () async {
                   setState(() {
                     showSpinner = true;

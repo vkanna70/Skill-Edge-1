@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/api/teammembers_api.dart';
 import 'package:flash_chat/model/teammembers.dart';
 import 'package:flash_chat/notifier/skill_notifier.dart';
@@ -14,6 +15,7 @@ class TeamMemberDetail extends StatefulWidget {
 }
 
 class _TeamMemberDetailState extends State<TeamMemberDetail> {
+  final _auth = FirebaseAuth.instance;
   List _curSkillsValues = [];
   TeamMember _currentTeamMember;
   @override
@@ -103,7 +105,31 @@ class _TeamMemberDetailState extends State<TeamMemberDetail> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(teamMemberNotifier.currentteammember.firstname),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.close),
+              onPressed: () {
+                _auth.signOut();
+                Navigator.pop(context);
+              }),
+        ],
+//        title: Text(teamMemberNotifier.currentteammember.firstname),
+        title: teamMemberNotifier.currentteammember.lastname != null
+            ? Text(
+                teamMemberNotifier.currentteammember.firstname.toString() +
+                    ' ' +
+                    teamMemberNotifier.currentteammember.lastname,
+                style: TextStyle(
+//          color: Color(0xFF2A2969),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold))
+            : Text(
+                teamMemberNotifier.currentteammember.firstname.toString(),
+                style: TextStyle(
+//    color: Color(0xFF2A2969),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+              ),
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -126,10 +152,10 @@ class _TeamMemberDetailState extends State<TeamMemberDetail> {
                           Text(
                             'Future role: ${teamMemberNotifier.currentteammember.futrole}',
                             style: TextStyle(
-                              fontSize: 22,
+                              fontSize: 18,
 //                              fontStyle: FontStyle.italic,
                               fontWeight: FontWeight.bold,
-                              color: Colors.blueAccent,
+                              color: Color(0xFF2A2969),
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -201,17 +227,28 @@ class _TeamMemberDetailState extends State<TeamMemberDetail> {
                             children: <Widget>[
                               SizedBox(width: 20),
                               InkWell(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10),
-                                  child: Text(
-                                      teamMemberNotifier.currentteammember
-                                          .curskillvalues[index]
-                                          .toString(),
-                                      style: TextStyle(fontSize: 90),
-                                      textAlign: TextAlign.center),
+                                child: Card(
+//                                  color: Color(0xFFFBAB19),
+                                  color: (teamMemberNotifier.currentteammember
+                                              .curskillvalues[index] <
+                                          teamMemberNotifier.currentteammember
+                                              .reqskillvalues[index])
+                                      ? Colors.redAccent
+                                      : Colors.greenAccent,
+                                  elevation: 5,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    child: Text(
+                                        teamMemberNotifier.currentteammember
+                                            .curskillvalues[index]
+                                            .toString(),
+                                        style: TextStyle(fontSize: 90),
+                                        textAlign: TextAlign.center),
+                                  ),
                                 ),
                                 onTap: () {
+//                                  TODO: Handle when the skill record isn't present
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(

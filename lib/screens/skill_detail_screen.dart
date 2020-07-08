@@ -37,7 +37,6 @@ class _SkilldetailScreenState extends State<SkilldetailScreen> {
           // Add your onPressed code here!
         },
         child: Icon(Icons.add),
-        backgroundColor: Colors.green,
       ),
       appBar: AppBar(
         leading: null,
@@ -50,121 +49,125 @@ class _SkilldetailScreenState extends State<SkilldetailScreen> {
                 Navigator.pop(context);
               }),
         ],
-        title: Text('⚡' + widget.skillname),
-        backgroundColor: Colors.lightBlueAccent,
+        title: Text(widget.skillname),
+//        backgroundColor: Colors.lightBlueAccent,
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          child: Column(
-            children: <Widget>[
-              SizedBox(height: 10),
-              Card(
-                elevation: 5,
-                margin: EdgeInsets.symmetric(horizontal: 10),
+      body: _currentskill != null
+          ? SingleChildScrollView(
+              child: Container(
+//TODO: Convert to Listview so that it is scrollable
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
+                    SizedBox(height: 10),
+                    Card(
+                      elevation: 5,
+                      margin: EdgeInsets.symmetric(horizontal: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          Text(
+                            _currentskill.name.toString(),
+                            style: TextStyle(
+                                color: Color(0xFF2A2969),
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            'Category: ' +
+                                '${_currentskill.category.toString()}',
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(
+                            height: 10,
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Card(
+                      elevation: 5,
+                      margin: EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(
+                        'Description: \n\n' +
+                            '${_currentskill.description.toString()} \n',
+                        style: TextStyle(
+                          color: Color(0xFF2A2969),
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10),
                     Text(
-                      _currentskill.name.toString(),
+                      'Related Badges',
                       style: TextStyle(
-                          color: Colors.lightBlue,
-                          fontSize: 22,
+                          color: Color(0xFF2A2969),
+                          fontSize: 18,
                           fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(
-                      height: 5,
+                    SizedBox(height: 10),
+                    Card(
+                      elevation: 5,
+                      margin: EdgeInsets.symmetric(horizontal: 10),
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            title: Text(
+                              _currentskill.badges[index].toString(),
+                            ),
+                          );
+                        },
+                        itemCount: _currentskill.badges.length,
+                        separatorBuilder: (BuildContext context, int index) {
+                          return Divider(
+                            color: Colors.black,
+                          );
+                        },
+                      ),
                     ),
+                    SizedBox(height: 10),
                     Text(
-                      'Category: ' + '${_currentskill.category.toString()}',
+                      'Top Learning Resources',
+                      style: TextStyle(
+                          color: Color(0xFF2A2969),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(
-                      height: 10,
-                    )
+                    SizedBox(height: 10),
+                    Card(
+                      elevation: 5,
+                      margin: EdgeInsets.symmetric(horizontal: 10),
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            title: Text(
+                              _currentskill.resources[index].toString(),
+                            ),
+                          );
+                        },
+                        itemCount: _currentskill.resources.length,
+                        separatorBuilder: (BuildContext context, int index) {
+                          return Divider(
+                            color: Colors.black,
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Card(),
+                    SizedBox(height: 10),
                   ],
                 ),
               ),
-              SizedBox(height: 10),
-              Card(
-                elevation: 5,
-                margin: EdgeInsets.symmetric(horizontal: 10),
-                child: Text(
-                  'Description: \n\n' +
-                      '${_currentskill.description.toString()}',
-                  style: TextStyle(
-                    color: Colors.lightBlue,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-              Text(
-                'Related Badges',
-                style: TextStyle(
-                    color: Colors.lightBlue,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 10),
-              Card(
-                elevation: 5,
-                margin: EdgeInsets.symmetric(horizontal: 10),
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(
-                        _currentskill.badges[index].toString(),
-                      ),
-                    );
-                  },
-                  itemCount: _currentskill.badges.length,
-                  separatorBuilder: (BuildContext context, int index) {
-                    return Divider(
-                      color: Colors.black,
-                    );
-                  },
-                ),
-              ),
-              SizedBox(height: 10),
-              Text(
-                'Top Learning Resources',
-                style: TextStyle(
-                    color: Colors.lightBlue,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 10),
-              Card(
-                elevation: 5,
-                margin: EdgeInsets.symmetric(horizontal: 10),
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(
-                        _currentskill.resources[index].toString(),
-                      ),
-                    );
-                  },
-                  itemCount: _currentskill.resources.length,
-                  separatorBuilder: (BuildContext context, int index) {
-                    return Divider(
-                      color: Colors.black,
-                    );
-                  },
-                ),
-              ),
-              SizedBox(height: 10),
-              Card(),
-              SizedBox(height: 10),
-            ],
-          ),
-        ),
-      ),
+            )
+          : Text('Skill not present in the database'),
 //      body: SafeArea(
 //        child: Column(
 //          children: <Widget>[
